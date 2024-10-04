@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cell from './Cell';
-import { VStack, Grid } from '@yamada-ui/react';
+import { VStack, Grid, Button, Box } from '@yamada-ui/react';
 import axios from 'axios';
 
 const Board: React.FC = () => {
@@ -9,44 +9,60 @@ const Board: React.FC = () => {
     Array.from({ length: 3 }, () => Array(3).fill(null))
   );
   const [currentPlayer, setCurrentPlayer] = useState<string>("X");
+  const [winner, setWinner] = useState<string | null>(null);
 
   useEffect(() => {
-    // ページが読み込まれた際にバックエンドからボードの状態を取得
-    const fetchBoard = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8080/board');
-        setBoard(response.data.board);
-        setCurrentPlayer(response.data.current_player);
-      }
-      catch (error) {
-        console.error("Failed to fetch board state:", error);
-        if (error.response) {
-          console.log("Error details:", error.response.data);
-        } else {
-          console.log("Error message:", error.message);
-        }
-      }
-    };
-
     fetchBoard();
   }, []);
 
-  // セルをクリックした際の処理
-  const handleCellClick = async (row: number, col: number) => {
-    console.log(`Attempting to place a piece at row: ${row}, col: ${col}`);
+  // ボードの状態を取得するための関数
+  const fetchBoard = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8080/move', [row, col]);
-      console.log('Move response:', response.data);
+      const response = await axios.get('http://127.0.0.1:8080/board');
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
+      setWinner(response.data.winner);
+    } catch (error) {
+      console.error("Failed to fetch board state:", error);
+    }
+  };
+
+  // セルをクリックした際の処理
+  const handleCellClick = async (row: number, col: number) => {
+    if (winner) {
+      console.log("Game has already been won by:", winner);
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8080/move', [row, col]);
+      setBoard(response.data.board);
+      setCurrentPlayer(response.data.current_player);
+      setWinner(response.data.winner);
     } catch (error) {
       console.error("Invalid move:", error);
-      console.log("Error details:", error.response?.data || error.message);
+    }
+  };
+
+  // ゲームをリセットするための関数
+  const handleReset = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8080/reset');
+      setBoard(response.data.board);
+      setCurrentPlayer(response.data.current_player);
+      setWinner(response.data.winner);
+    } catch (error) {
+      console.error("Failed to reset the game:", error);
     }
   };
 
   return (
     <VStack spacing="4">
+      {winner && (
+        <Box>
+          <h2>{`Winner: ${winner}`}</h2>
+        </Box>
+      )}
       <Grid templateColumns="repeat(3, 1fr)" gap="4">
         {board.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
@@ -58,6 +74,9 @@ const Board: React.FC = () => {
           ))
         )}
       </Grid>
+      <Button onClick={handleReset} marginTop="4">
+        Reset Game
+      </Button>
     </VStack>
   );
 };
