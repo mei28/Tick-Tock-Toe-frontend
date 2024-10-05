@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Cell from './Cell';
-import { VStack, Grid, Button, Box } from '@yamada-ui/react';
+import WinningLineOverlay from './WinningLineOverlay';
+import { VStack, Grid, Button, Box, Heading } from '@yamada-ui/react';
 import axios from 'axios';
+import { playerColors, Player } from '../constants/theme';
+
+type WinningLine = [[number, number], [number, number], [number, number]] | null;
 
 const Board: React.FC = () => {
   // 3x3のボード状態を管理
   const [board, setBoard] = useState<(string | null)[][]>(
     Array.from({ length: 3 }, () => Array(3).fill(null))
   );
-  const [currentPlayer, setCurrentPlayer] = useState<string>("X");
-  const [winner, setWinner] = useState<string | null>(null);
+  const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
+  const [winner, setWinner] = useState<Player | null>(null);
+  const [winningLine, setWinningLine] = useState<WinningLine>(null);
 
   useEffect(() => {
     fetchBoard();
@@ -22,6 +27,7 @@ const Board: React.FC = () => {
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
+      setWinningLine(response.data.winning_line);
     } catch (error) {
       console.error("Failed to fetch board state:", error);
     }
@@ -39,6 +45,7 @@ const Board: React.FC = () => {
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
+      setWinningLine(response.data.winning_line);
     } catch (error) {
       console.error("Invalid move:", error);
     }
@@ -51,6 +58,7 @@ const Board: React.FC = () => {
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
+      setWinningLine(null);
     } catch (error) {
       console.error("Failed to reset the game:", error);
     }
@@ -58,23 +66,34 @@ const Board: React.FC = () => {
 
   return (
     <VStack spacing="4">
-      {winner && (
+      {winner ? (
         <Box>
-          <h2>{`Winner: ${winner}`}</h2>
+          <Heading size="lg" color={playerColors[winner].color}>
+            {`Winner: ${winner}`}
+          </Heading>
+        </Box>
+      ) : (
+        <Box>
+          <Heading size="lg" color={playerColors[currentPlayer].color}>
+            {`Current Turn: ${currentPlayer}`}
+          </Heading>
         </Box>
       )}
-      <Grid templateColumns="repeat(3, 1fr)" gap="4">
-        {board.map((row, rowIndex) =>
-          row.map((cell, colIndex) => (
-            <Cell
-              key={`${rowIndex}-${colIndex}`}
-              value={cell || ""}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
-            />
-          ))
-        )}
-      </Grid>
-      <Button onClick={handleReset} marginTop="4">
+      <Box position="relative" width="300px" height="300px">
+        <Grid templateColumns="repeat(3, 1fr)" gap="4" width="100%" height="100%" zIndex={1}>
+          {board.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (
+              <Cell
+                key={`${rowIndex}-${colIndex}`}
+                value={cell || ""}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
+                isWinning={winningLine?.some(([winRow, winCol]) => winRow === rowIndex && winCol === colIndex) || false}
+              />
+            ))
+          )}
+        </Grid>
+      </Box>
+      <Button onClick={handleReset} marginTop="4" colorScheme="teal">
         Reset Game
       </Button>
     </VStack>
