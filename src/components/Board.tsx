@@ -5,6 +5,8 @@ import { VStack, Grid, Button, Box, Heading } from '@yamada-ui/react';
 import axios from 'axios';
 import { playerColors, Player } from '../constants/theme';
 
+const API_URL = import.meta.env.VITE_API_URL;  // Use environment variable
+
 type WinningLine = [[number, number], [number, number], [number, number]] | null;
 
 const Board: React.FC = () => {
@@ -23,7 +25,7 @@ const Board: React.FC = () => {
   // ボードの状態を取得するための関数
   const fetchBoard = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8080/board');
+      const response = await axios.get(`${API_URL}/board`);
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
@@ -41,7 +43,7 @@ const Board: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8080/move', [row, col]);
+      const response = await axios.post(`${API_URL}/move`, [row, col]);
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
@@ -54,7 +56,7 @@ const Board: React.FC = () => {
   // ゲームをリセットするための関数
   const handleReset = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8080/reset');
+      const response = await axios.post(`${API_URL}/reset`);
       setBoard(response.data.board);
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
