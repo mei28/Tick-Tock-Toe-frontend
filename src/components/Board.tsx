@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Cell from './Cell';
-import WinningLineOverlay from './WinningLineOverlay';
 import { VStack, Grid, Button, Box, Heading } from '@yamada-ui/react';
 import axios from 'axios';
 import { playerColors, Player } from '../constants/theme';
@@ -67,7 +66,7 @@ const Board: React.FC = () => {
   };
 
   return (
-    <VStack spacing="4">
+    <VStack >
       {winner ? (
         <Box>
           <Heading size="lg" color={playerColors[winner].color}>
