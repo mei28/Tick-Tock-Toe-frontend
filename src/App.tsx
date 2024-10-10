@@ -1,17 +1,20 @@
-import React from 'react';
-import { UIProvider, Container, Heading } from '@yamada-ui/react';
-import Board from './components/Board';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { UIProvider } from '@yamada-ui/react'; // Import UIProvider from yamadaui
+import HomeScreen from './components/HomeScreen';
+import GameScreen from './components/GameScreen';
 
-const App: React.FC = () => {
+function App() {
   return (
     <UIProvider>
-      <Container centerContent>
-        <Heading my="8" color="teal.600">Tick-Tock-Toe</Heading>
-        <Board />
-      </Container>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/game/:gameId" element={<GameScreen />} />
+        </Routes>
+      </Router>
     </UIProvider>
   );
-};
+}
 
 export default App;
 
