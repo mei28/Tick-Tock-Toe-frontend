@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cell from './Cell';
-import { VStack, Grid, Button, Box, Heading, Input, HStack, Text, Container } from '@yamada-ui/react';
+import { VStack, Grid, Button, Box, Heading, Input, HStack, Text } from '@yamada-ui/react';
 import axios from 'axios';
 import { playerColors, Player } from '../constants/theme';
 
@@ -81,7 +81,7 @@ const Board: React.FC = () => {
   };
 
   return (
-    <VStack align="center" spacing="6">
+    <VStack align="center" >
       {gameId && (
         <Text fontSize="lg" color="gray.500">
           {`Game ID: ${gameId}`}

@@ -28,7 +28,7 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <VStack spacing="8" align="center" justify="center" h="100vh">
+    <VStack align="center" justify="center" h="100vh">
       <Heading size="2xl" color="teal.500">
         Welcome to Tick-Tock-Toe
       </Heading>
@@ -51,7 +51,7 @@ const HomeScreen: React.FC = () => {
       </Box>
 
       {/* 既存のゲームに参加するための入力フォームとボタン */}
-      <VStack spacing="4" width="100%" align="center">
+      <VStack width="100%" align="center">
         <HStack width="60%" maxW="300px">
           <Input
             placeholder="Enter Game ID"

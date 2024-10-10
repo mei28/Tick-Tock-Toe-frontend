@@ -96,7 +96,7 @@ const GameScreen: React.FC = () => {
       flexDirection="column"
       justifyContent="center"
     >
-      <VStack spacing="6" align="center" width="100%">
+      <VStack align="center" width="100%">
         {/* 修正箇所: ボタンを中央に配置 */}
         <HStack justifyContent="center" width="100%">
           <IconButton
