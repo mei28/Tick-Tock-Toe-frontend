@@ -21,6 +21,14 @@ const GameScreen: React.FC = () => {
   useEffect(() => {
     if (gameId) {
       fetchBoard();
+
+      // 3秒ごとにボードの状態を取得
+      const interval = setInterval(() => {
+        fetchBoard();
+      }, 3000);
+
+      // クリーンアップ関数でタイマーをクリア
+      return () => clearInterval(interval);
     }
   }, [gameId]);
 
@@ -33,6 +41,7 @@ const GameScreen: React.FC = () => {
       setWinningLine(response.data.winning_line);
     } catch (error) {
       console.error('Failed to fetch board state:', error);
+      // 必要に応じてユーザーに通知
     }
   };
 
@@ -45,6 +54,9 @@ const GameScreen: React.FC = () => {
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
       setWinningLine(response.data.winning_line);
+
+      // 自分のターン後に即時にボードを更新
+      fetchBoard();
     } catch (error) {
       console.error('Invalid move:', error);
     }
