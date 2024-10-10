@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
-import { VStack, Button, Input, Heading, Box, HStack, Text } from '@yamada-ui/react';
+import React from 'react';
+import {
+  VStack,
+  Button,
+  Input,
+  Heading,
+  Box,
+  HStack,
+  Text,
+  IconButton,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from '@yamada-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { FaQuestionCircle } from "react-icons/fa";
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const HomeScreen: React.FC = () => {
-  const [gameId, setGameId] = useState<string>('');
+  const [gameId, setGameId] = React.useState<string>('');
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
 
   const handleNewGame = async () => {
     try {
@@ -33,7 +48,7 @@ const HomeScreen: React.FC = () => {
         Welcome to Tick-Tock-Toe
       </Heading>
 
-      {/* 新しいゲームを開始するボタン */}
+      {/* New game button */}
       <Button
         onClick={handleNewGame}
         colorScheme="teal"
@@ -50,7 +65,7 @@ const HomeScreen: React.FC = () => {
         </Text>
       </Box>
 
-      {/* 既存のゲームに参加するための入力フォームとボタン */}
+      {/* Join existing game */}
       <VStack width="100%" align="center">
         <HStack width="60%" maxW="300px">
           <Input
@@ -66,6 +81,32 @@ const HomeScreen: React.FC = () => {
           </Button>
         </HStack>
       </VStack>
+
+      {/* Modal for instructions */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalHeader>How to Play</ModalHeader>
+        <ModalBody>
+          <Text>
+            Tick-Tock-Toe is a fun twist on Tic-Tac-Toe. Each player can place only 3 pieces on the board at a time. When a player places a fourth piece, the oldest one disappears.
+          </Text>
+          <Text marginTop="4">
+            The goal is to align three pieces in a row—horizontally, vertically, or diagonally—to win the game.
+          </Text>
+        </ModalBody>
+      </Modal>
+
+      {/* Small question mark button at the bottom right */}
+      <IconButton
+        aria-label="How to Play"
+        icon={<FaQuestionCircle />}
+        onClick={onOpen} // Open the modal when clicked
+        size="lg"
+        color="gray.500"
+        variant="ghost"
+        position="fixed"
+        bottom="2"
+        right="2"
+      />
     </VStack>
   );
 };

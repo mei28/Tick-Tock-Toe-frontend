@@ -22,6 +22,7 @@ const Cell: React.FC<CellProps> = ({ value, onClick, isWinning }) => {
         onClick={onClick}
         width="80px"
         height="80px"
+        fontSize={'5xl'}
         bg={isWinning ? winningBackgroundColor : playerColor?.color || "gray.300"} // 勝利セルは背景色を透明に近く
         color="white"
         borderRadius="md"
