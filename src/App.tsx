@@ -1,12 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { UIProvider, Container } from '@yamada-ui/react'; // Import Container for centralized layout
+import { UIProvider, Container } from '@yamada-ui/react';
 import HomeScreen from './components/HomeScreen';
 import GameScreen from './components/GameScreen';
 
 function App() {
   return (
     <UIProvider>
-      <Container maxW="container.md" centerContent> {/* コンテンツ全体を中央に配置 */}
+      <Container
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minH="100vh"       // ビューポート全体の高さを確保
+        maxW="container.md"
+      >
         <Router>
           <Routes>
             <Route path="/" element={<HomeScreen />} />

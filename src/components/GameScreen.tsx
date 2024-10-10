@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useNotice, VStack, Button, Box, Heading, Grid, IconButton, HStack, Text, Tooltip, Alert, AlertIcon } from '@yamada-ui/react';
+import { useNotice, VStack, Button, Box, Heading, Grid, IconButton, HStack, Text, Tooltip, Container } from '@yamada-ui/react';
 import { FaHome, FaClipboard } from "react-icons/fa";
 import { Icon } from "@yamada-ui/react";
 import axios from 'axios';
@@ -71,87 +71,88 @@ const GameScreen: React.FC = () => {
   const handleCopyToClipboard = () => {
     if (gameId) {
       navigator.clipboard.writeText(gameId);
-      setShowAlert(true); // Alertを表示
-
-      // 3秒後にAlertを非表示にする
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 1000);
+      notice({ title: '', description: 'Copied!', duration: 1000, status: 'success', placement: 'top' });
     }
   };
 
   return (
-    <VStack height="100vh" justifyContent="center" alignItems="center" spacing="6">
-      {/* 上部に戻るボタンとゲームIDの表示 */}
-      <HStack justifyContent="space-between" width="100%">
-        <IconButton
-          aria-label="Go back to home"
-          icon={<Icon as={FaHome} />}
-          onClick={handleBackToHome}
-          size="lg"
-          colorScheme="teal"
-        />
-        <HStack>
-          <Text fontSize="md" color="gray.500">
-            {`Game ID: ${gameId}`}
-          </Text>
-          <Tooltip label="Copy to clipboard">
-            <IconButton
-              aria-label="Copy game ID"
-              icon={<Icon as={FaClipboard} />}
-              // onClick={handleCopyToClipboard}
-              onClick={() => notice({ title: '', description: 'copied!', duration: 1000, status: 'success', placement: 'top' })}
-              size="md"
-              colorScheme="teal"
-            />
-          </Tooltip>
-        </HStack>
-        <Box width="48px" /> {/* ボタン分のスペースを確保 */}
-      </HStack>
-
-      {/* プレイヤー情報の表示 */}
-      <Box marginY="4">
-        {winner ? (
-          <Heading size="lg" color={playerColors[winner].color}>
-            {`Winner: ${winner}`}
-          </Heading>
-        ) : (
-          <Heading size="lg" color={playerColors[currentPlayer].color}>
-            {`Current Turn: ${currentPlayer}`}
-          </Heading>
-        )}
-      </Box>
-
-      {/* ボードの表示 */}
-      <Box position="relative" width="300px" height="300px">
-        <Grid templateColumns="repeat(3, 1fr)" gap="4" width="100%" height="100%" zIndex={1}>
-          {board.map((row, rowIndex) =>
-            row.map((cell, colIndex) => (
-              <Cell
-                key={`${rowIndex}-${colIndex}`}
-                value={cell || ""}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
-                isWinning={winningLine?.some(([winRow, winCol]) => winRow === rowIndex && winCol === colIndex) || false}
+    <Container
+      maxW="container.md"
+      centerContent
+      minH="100vh"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
+      <VStack spacing="6" align="center" width="100%">
+        {/* 修正箇所: ボタンを中央に配置 */}
+        <HStack justifyContent="center" width="100%">
+          <IconButton
+            aria-label="Go back to home"
+            icon={<Icon as={FaHome} />}
+            onClick={handleBackToHome}
+            size="lg"
+            colorScheme="teal"
+          />
+          <HStack>
+            <Text fontSize="md" color="gray.500">
+              {`Game ID: ${gameId}`}
+            </Text>
+            <Tooltip label="Copy to clipboard">
+              <IconButton
+                aria-label="Copy game ID"
+                icon={<Icon as={FaClipboard} />}
+                onClick={handleCopyToClipboard}
+                size="md"
+                colorScheme="teal"
               />
-            ))
+            </Tooltip>
+          </HStack>
+        </HStack>
+
+        {/* プレイヤー情報の表示 */}
+        <Box marginY="4" textAlign="center">
+          {winner ? (
+            <Heading size="lg" color={playerColors[winner].color}>
+              {`Winner: ${winner}`}
+            </Heading>
+          ) : (
+            <Heading size="lg" color={playerColors[currentPlayer].color}>
+              {`Current Turn: ${currentPlayer}`}
+            </Heading>
           )}
-        </Grid>
-      </Box>
+        </Box>
 
-      {/* ゲーム終了時にリセットボタン */}
-      {winner && (
-        <Button onClick={handleReset} marginTop="4" colorScheme="teal">
-          Start New Game
-        </Button>
-      )}
+        {/* ボードの表示 */}
+        <Box position="relative" width="300px" height="300px">
+          <Grid templateColumns="repeat(3, 1fr)" gap="4" width="100%" height="100%" zIndex={1}>
+            {board.map((row, rowIndex) =>
+              row.map((cell, colIndex) => (
+                <Cell
+                  key={`${rowIndex}-${colIndex}`}
+                  value={cell || ""}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                  isWinning={winningLine?.some(([winRow, winCol]) => winRow === rowIndex && winCol === colIndex) || false}
+                />
+              ))
+            )}
+          </Grid>
+        </Box>
 
-      {/* リセットボタン */}
-      {!winner && gameId && (
-        <Button onClick={handleReset} marginTop="4" colorScheme="teal">
-          Reset Game
-        </Button>
-      )}
-    </VStack>
+        {/* リセットボタン */}
+        {winner && (
+          <Button onClick={handleReset} marginTop="4" colorScheme="teal">
+            Start New Game
+          </Button>
+        )}
+
+        {!winner && gameId && (
+          <Button onClick={handleReset} marginTop="4" colorScheme="teal">
+            Reset Game
+          </Button>
+        )}
+      </VStack>
+    </Container>
   );
 };
 
