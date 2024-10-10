@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VStack, Button, Input, Heading, Box } from '@yamada-ui/react';
+import { VStack, Button, Input, Heading, Box, HStack, Text } from '@yamada-ui/react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -28,24 +28,47 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <VStack>
-      <Heading>Welcome to Tick-Tock-Toe</Heading>
-      <Button onClick={handleNewGame} colorScheme="teal" marginY="4">
+    <VStack spacing="8" align="center" justify="center" h="100vh">
+      <Heading size="2xl" color="teal.500">
+        Welcome to Tick-Tock-Toe
+      </Heading>
+
+      {/* 新しいゲームを開始するボタン */}
+      <Button
+        onClick={handleNewGame}
+        colorScheme="teal"
+        size="lg"
+        width="60%"
+        maxW="300px"
+      >
         Start New Game
       </Button>
-      <Box>
-        <Input
-          placeholder="Enter game ID"
-          value={gameId}
-          onChange={(e) => setGameId(e.target.value)}
-          maxLength={5}
-        />
-        <Button onClick={handleJoinGame} colorScheme="teal" marginY="4">
-          Join Game
-        </Button>
+
+      <Box width="100%" textAlign="center">
+        <Text fontSize="lg" color="gray.600">
+          or
+        </Text>
       </Box>
+
+      {/* 既存のゲームに参加するための入力フォームとボタン */}
+      <VStack spacing="4" width="100%" align="center">
+        <HStack width="60%" maxW="300px">
+          <Input
+            placeholder="Enter Game ID"
+            value={gameId}
+            onChange={(e) => setGameId(e.target.value)}
+            maxLength={5}
+            size="lg"
+            variant="filled"
+          />
+          <Button onClick={handleJoinGame} colorScheme="teal" size="lg">
+            Join
+          </Button>
+        </HStack>
+      </VStack>
     </VStack>
   );
 };
 
 export default HomeScreen;
+

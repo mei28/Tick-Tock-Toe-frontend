@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { VStack, Button, Box, Heading, Grid, IconButton, HStack } from '@yamada-ui/react';
-import { FaHome } from "react-icons/fa";
-import { Icon } from "@yamada-ui/react"
+import { useNotice, VStack, Button, Box, Heading, Grid, IconButton, HStack, Text, Tooltip, Alert, AlertIcon } from '@yamada-ui/react';
+import { FaHome, FaClipboard } from "react-icons/fa";
+import { Icon } from "@yamada-ui/react";
 import axios from 'axios';
 import Cell from './Cell';
-import { playerColors, Player } from '../constants/theme'; // プレイヤーカラー
+import { playerColors, Player } from '../constants/theme';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const GameScreen: React.FC = () => {
   const { gameId } = useParams<{ gameId: string }>();
-  const navigate = useNavigate(); // ホームに戻るためのナビゲート関数
+  const navigate = useNavigate();
   const [board, setBoard] = useState<(string | null)[][]>(Array.from({ length: 3 }, () => Array(3).fill(null)));
   const [currentPlayer, setCurrentPlayer] = useState<Player>('X');
   const [winner, setWinner] = useState<Player | null>(null);
   const [winningLine, setWinningLine] = useState<[[number, number], [number, number], [number, number]] | null>(null);
+  const notice = useNotice();
 
   useEffect(() => {
     if (gameId) {
@@ -67,8 +68,20 @@ const GameScreen: React.FC = () => {
     navigate('/'); // ホームに戻る
   };
 
+  const handleCopyToClipboard = () => {
+    if (gameId) {
+      navigator.clipboard.writeText(gameId);
+      setShowAlert(true); // Alertを表示
+
+      // 3秒後にAlertを非表示にする
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 1000);
+    }
+  };
+
   return (
-    <VStack>
+    <VStack height="100vh" justifyContent="center" alignItems="center" spacing="6">
       {/* 上部に戻るボタンとゲームIDの表示 */}
       <HStack justifyContent="space-between" width="100%">
         <IconButton
@@ -78,9 +91,21 @@ const GameScreen: React.FC = () => {
           size="lg"
           colorScheme="teal"
         />
-        <Heading size="md" color="gray.500">
-          {`Game ID: ${gameId}`}
-        </Heading>
+        <HStack>
+          <Text fontSize="md" color="gray.500">
+            {`Game ID: ${gameId}`}
+          </Text>
+          <Tooltip label="Copy to clipboard">
+            <IconButton
+              aria-label="Copy game ID"
+              icon={<Icon as={FaClipboard} />}
+              // onClick={handleCopyToClipboard}
+              onClick={() => notice({ title: '', description: 'copied!', duration: 1000, status: 'success', placement: 'top' })}
+              size="md"
+              colorScheme="teal"
+            />
+          </Tooltip>
+        </HStack>
         <Box width="48px" /> {/* ボタン分のスペースを確保 */}
       </HStack>
 

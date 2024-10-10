@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cell from './Cell';
-import { VStack, Grid, Button, Box, Heading, Input, HStack, Text } from '@yamada-ui/react';
+import { VStack, Grid, Button, Box, Heading, Input, HStack, Text, Container } from '@yamada-ui/react';
 import axios from 'axios';
 import { playerColors, Player } from '../constants/theme';
 
@@ -13,8 +13,8 @@ const Board: React.FC = () => {
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [winner, setWinner] = useState<Player | null>(null);
   const [winningLine, setWinningLine] = useState<WinningLine>(null);
-  const [gameId, setGameId] = useState<string | null>(null); // 新しいゲームIDの追加
-  const [inputGameId, setInputGameId] = useState<string>(""); // 既存のゲームに参加するためのID入力フォーム
+  const [gameId, setGameId] = useState<string | null>(null);
+  const [inputGameId, setInputGameId] = useState<string>("");
 
   useEffect(() => {
     if (gameId) {
@@ -62,11 +62,10 @@ const Board: React.FC = () => {
     }
   };
 
-  // 新しいゲームを開始する関数
   const handleNewGame = async () => {
     try {
       const response = await axios.post(`${API_URL}/new`);
-      setGameId(response.data);  // 新しいゲームIDを取得
+      setGameId(response.data);
       setBoard(Array.from({ length: 3 }, () => Array(3).fill(null)));
       setCurrentPlayer("X");
       setWinner(null);
@@ -76,31 +75,25 @@ const Board: React.FC = () => {
     }
   };
 
-  // 既存のゲームに参加する関数
   const handleJoinGame = () => {
-    setGameId(inputGameId); // 入力されたゲームIDで既存のゲームに参加
-    setInputGameId(""); // 入力フィールドをクリア
+    setGameId(inputGameId);
+    setInputGameId("");
   };
 
   return (
-    <VStack>
-      {/* ゲームIDを表示 */}
+    <VStack align="center" spacing="6">
       {gameId && (
-        <Box>
-          <Text fontSize="lg" color="gray.500">
-            {`Game ID: ${gameId}`}
-          </Text>
-        </Box>
+        <Text fontSize="lg" color="gray.500">
+          {`Game ID: ${gameId}`}
+        </Text>
       )}
 
-      {/* 新しいゲームを始めるボタン */}
       {!gameId && (
         <Button onClick={handleNewGame} colorScheme="teal" marginY="4">
           Start New Game
         </Button>
       )}
 
-      {/* ゲームIDを入力して既存のゲームに参加 */}
       {!gameId && (
         <HStack marginY="4">
           <Input
@@ -115,24 +108,13 @@ const Board: React.FC = () => {
         </HStack>
       )}
 
-      {/* ボードを表示するのはゲームが始まっている場合のみ */}
       {gameId && (
         <>
-          {winner ? (
-            <Box>
-              <Heading size="lg" color={playerColors[winner].color}>
-                {`Winner: ${winner}`}
-              </Heading>
-            </Box>
-          ) : (
-            <Box>
-              <Heading size="lg" color={playerColors[currentPlayer].color}>
-                {`Current Turn: ${currentPlayer}`}
-              </Heading>
-            </Box>
-          )}
+          <Heading size="lg" color={winner ? playerColors[winner].color : playerColors[currentPlayer].color}>
+            {winner ? `Winner: ${winner}` : `Current Turn: ${currentPlayer}`}
+          </Heading>
 
-          <Box position="relative" width="300px" height="300px">
+          <Box position="relative" width="300px" height="300px" marginY="6">
             <Grid templateColumns="repeat(3, 1fr)" gap="4" width="100%" height="100%" zIndex={1}>
               {board.map((row, rowIndex) =>
                 row.map((cell, colIndex) => (
@@ -147,16 +129,14 @@ const Board: React.FC = () => {
             </Grid>
           </Box>
 
-          {/* ゲームが終了している場合は、新しいゲームを開始するボタンを表示 */}
           {winner && (
-            <Button onClick={handleNewGame} marginTop="4" colorScheme="teal">
+            <Button onClick={handleNewGame} colorScheme="teal" marginTop="4">
               Start New Game
             </Button>
           )}
 
-          {/* ゲーム中はリセットボタンを表示 */}
           {!winner && gameId && (
-            <Button onClick={handleReset} marginTop="4" colorScheme="teal">
+            <Button onClick={handleReset} colorScheme="teal" marginTop="4">
               Reset Game
             </Button>
           )}
