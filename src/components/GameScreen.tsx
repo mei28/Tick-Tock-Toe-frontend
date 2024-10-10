@@ -22,10 +22,10 @@ const GameScreen: React.FC = () => {
     if (gameId) {
       fetchBoard();
 
-      // 3秒ごとにボードの状態を取得
+      // 秒ごとにボードの状態を取得
       const interval = setInterval(() => {
         fetchBoard();
-      }, 3000);
+      }, 100);
 
       // クリーンアップ関数でタイマーをクリア
       return () => clearInterval(interval);
