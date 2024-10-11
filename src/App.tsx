@@ -19,14 +19,13 @@ function App() {
             <Route path="/" element={<HomeScreen />} />
             <Route path="/game/:gameId" element={<GameScreen />} />
 
-            {/* エラーページのルート設定 */}
+            {/* エラーページ */}
             <Route
               path="/403"
               element={
                 <ErrorPage
                   code={403}
-                  message="Forbidden: You don't have access to this page."
-                  imageSrc="/403 Forbidden.png"
+                  imageSrc="/public/403 Forbidden.png"
                 />
               }
             />
@@ -35,8 +34,7 @@ function App() {
               element={
                 <ErrorPage
                   code={404}
-                  message="Page Not Found."
-                  imageSrc="/404 NotFound.png"
+                  imageSrc="/public/404 NotFound.png"
                 />
               }
             />
@@ -45,8 +43,7 @@ function App() {
               element={
                 <ErrorPage
                   code={418}
-                  message="I'm a teapot! This is a fun error."
-                  imageSrc="/418 I'm a teapot.png"
+                  imageSrc="/public/418 I'm a teapot.png"
                 />
               }
             />
@@ -55,8 +52,7 @@ function App() {
               element={
                 <ErrorPage
                   code={500}
-                  message="Internal Server Error."
-                  imageSrc="/500 InternalServerError.png"
+                  imageSrc="/public/500 InternalServerError.png"
                 />
               }
             />
@@ -65,19 +61,16 @@ function App() {
               element={
                 <ErrorPage
                   code={503}
-                  message="Service Unavailable."
-                  imageSrc="/503 ServiceUnavailable.png"
+                  imageSrc="/public/503 ServiceUnavailable.png"
                 />
               }
             />
-            {/* 未知のページにアクセスした場合の404エラー */}
             <Route
               path="*"
               element={
                 <ErrorPage
                   code={404}
-                  message="Page Not Found."
-                  imageSrc="/404 NotFound.png"
+                  imageSrc="/public/404 NotFound.png"
                 />
               }
             />

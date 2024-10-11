@@ -4,11 +4,10 @@ import { VStack, Text, Image } from '@yamada-ui/react';
 
 interface ErrorPageProps {
   code: number;
-  message: string;
   imageSrc?: string; // 画像のパス
 }
 
-const ErrorPage: React.FC<ErrorPageProps> = ({ code, message, imageSrc }) => {
+const ErrorPage: React.FC<ErrorPageProps> = ({ code, imageSrc }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,13 +19,13 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ code, message, imageSrc }) => {
   }, [navigate]);
 
   return (
-    <VStack justify="center" align="center" h="100vh" spacing="6">
+    <VStack justify="center" align="center" h="100vh" gap="6"> {/* spacingをgapに変更 */}
       {imageSrc && (
-        <Image 
-          src={imageSrc} 
-          alt={`${code} error`} 
+        <Image
+          src={imageSrc}
+          alt={`${code} error`}
           boxSize={{ base: '50%', md: '70%', lg: '80%' }} // スクリーンサイズに応じた大きさ
-          objectFit="contain" 
+          objectFit="contain"
         />
       )}
       <Text fontSize="sm" color="gray.500" textAlign="center">
