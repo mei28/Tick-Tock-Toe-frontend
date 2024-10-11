@@ -25,7 +25,7 @@ function App() {
               element={
                 <ErrorPage
                   code={403}
-                  imageSrc="/public/403 Forbidden.png"
+                  imageSrc="/403 Forbidden.png"
                 />
               }
             />
@@ -34,7 +34,7 @@ function App() {
               element={
                 <ErrorPage
                   code={404}
-                  imageSrc="/public/404 NotFound.png"
+                  imageSrc="/404 NotFound.png"
                 />
               }
             />
@@ -43,7 +43,7 @@ function App() {
               element={
                 <ErrorPage
                   code={418}
-                  imageSrc="/public/418 I'm a teapot.png"
+                  imageSrc="/418 I'm a teapot.png"
                 />
               }
             />
@@ -52,7 +52,7 @@ function App() {
               element={
                 <ErrorPage
                   code={500}
-                  imageSrc="/public/500 InternalServerError.png"
+                  imageSrc="/500 InternalServerError.png"
                 />
               }
             />
@@ -61,7 +61,7 @@ function App() {
               element={
                 <ErrorPage
                   code={503}
-                  imageSrc="/public/503 ServiceUnavailable.png"
+                  imageSrc="/503 ServiceUnavailable.png"
                 />
               }
             />
@@ -70,7 +70,7 @@ function App() {
               element={
                 <ErrorPage
                   code={404}
-                  imageSrc="/public/404 NotFound.png"
+                  imageSrc="/404 NotFound.png"
                 />
               }
             />
