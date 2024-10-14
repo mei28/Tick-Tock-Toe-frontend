@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   VStack,
   Button,
@@ -11,6 +11,10 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   useDisclosure,
 } from '@yamada-ui/react';
 import { useNavigate } from 'react-router-dom';
@@ -20,17 +24,20 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const HomeScreen: React.FC = () => {
-  const [gameId, setGameId] = React.useState<string>('');
+  const [gameId, setGameId] = useState<string>('');
+  const [showAlert, setShowAlert] = useState<boolean>(false); // Alertを表示するステート
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleNewGame = async () => {
     try {
       const response = await axios.post(`${API_URL}/new`);
-      const shortGameId = response.data.slice(0, 5);  // Shorten to 5 characters
-      navigate(`/game/${shortGameId}`);  // Navigate to the game screen
+      const shortGameId = response.data.slice(0, 5);
+      navigate(`/game/${shortGameId}`);
     } catch (error) {
-      console.error("Failed to start a new game:", error);
+      // エラー時にAlertを表示
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000); // 3秒後に非表示
     }
   };
 
@@ -38,7 +45,9 @@ const HomeScreen: React.FC = () => {
     if (gameId.length === 5) {
       navigate(`/game/${gameId}`);
     } else {
-      alert('Please enter a valid 5-character game ID.');
+      // Alertを表示
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000); // 3秒後に非表示
     }
   };
 
@@ -48,6 +57,17 @@ const HomeScreen: React.FC = () => {
         Welcome to Tick-Tock-Toe
       </Heading>
 
+      {/* Alert */}
+      {showAlert && (
+        <Alert status="error" maxW="sm" mt={4}>
+          <AlertIcon />
+          <AlertTitle>Invalid Game ID</AlertTitle>
+          <AlertDescription>
+            Please enter a valid 5-character game ID.
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* New game button */}
       <Button
         onClick={handleNewGame}
@@ -55,6 +75,7 @@ const HomeScreen: React.FC = () => {
         size="lg"
         width="60%"
         maxW="300px"
+        mt={4}
       >
         Start New Game
       </Button>
@@ -99,7 +120,7 @@ const HomeScreen: React.FC = () => {
       <IconButton
         aria-label="How to Play"
         icon={<FaQuestionCircle />}
-        onClick={onOpen} // Open the modal when clicked
+        onClick={onOpen}
         size="lg"
         color="gray.500"
         variant="ghost"
