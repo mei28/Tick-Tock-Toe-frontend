@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { VStack, Button, Box, Heading, Grid, IconButton, HStack, Text, Tooltip, Container } from '@yamada-ui/react';
-import { FaHome, FaClipboard } from 'react-icons/fa';
+import { FaHome, FaClipboard } from "react-icons/fa";
 import { useApi } from '../hooks/useApi';
-import Cell from '../components/Cell';
+import Cell from './Cell';
 import { playerColors, Player } from '../constants/theme';
 
 const GameScreen: React.FC = () => {
@@ -31,8 +31,8 @@ const GameScreen: React.FC = () => {
       setCurrentPlayer(data.current_player);
       setWinner(data.winner);
       setWinningLine(data.winning_line);
-    } catch {
-      // エラーハンドリングはフックで処理済み
+    } catch (error) {
+      // エラーは useApi フック内で処理済み
     }
   };
 
@@ -45,8 +45,8 @@ const GameScreen: React.FC = () => {
       setCurrentPlayer(data.current_player);
       setWinner(data.winner);
       setWinningLine(data.winning_line);
-    } catch {
-      // エラーハンドリングはフックで処理済み
+    } catch (error) {
+      // エラーは useApi フック内で処理済み
     }
   };
 
@@ -57,13 +57,20 @@ const GameScreen: React.FC = () => {
       setCurrentPlayer('X');
       setWinner(null);
       setWinningLine(null);
-    } catch {
-      // エラーハンドリングはフックで処理済み
+    } catch (error) {
+      // エラーは useApi フック内で処理済み
     }
   };
 
   return (
-    <Container maxW="container.md" centerContent minH="100vh" display="flex" flexDirection="column" justifyContent="center">
+    <Container
+      maxW="container.md"
+      centerContent
+      minH="100vh"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
       <VStack align="center" width="100%">
         <HStack justifyContent="center" width="100%">
           <IconButton aria-label="Go back to home" icon={<FaHome />} onClick={() => navigate('/')} size="lg" colorScheme="teal" />
@@ -104,3 +111,4 @@ const GameScreen: React.FC = () => {
 };
 
 export default GameScreen;
+

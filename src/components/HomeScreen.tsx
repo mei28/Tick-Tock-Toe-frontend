@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
 import {
-  VStack, Button, Input, Heading, Box, HStack, Text, IconButton, Modal, ModalHeader, ModalBody, useDisclosure, useNotice
+  VStack,
+  Button,
+  Input,
+  Heading,
+  Box,
+  HStack,
+  Text,
+  IconButton,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+  useNotice,
 } from '@yamada-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { FaQuestionCircle } from 'react-icons/fa';
+import { FaQuestionCircle } from "react-icons/fa";
 import { useApi } from '../hooks/useApi';
 
 const HomeScreen: React.FC = () => {
@@ -17,14 +29,8 @@ const HomeScreen: React.FC = () => {
     try {
       const shortGameId = await request('/new', 'POST');
       navigate(`/game/${shortGameId.slice(0, 5)}`);
-    } catch {
-      notice({
-        title: 'Error',
-        description: 'Failed to create a new game. Please try again later.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+    } catch (error) {
+      // エラーは useApi フック内で処理済み
     }
   };
 
@@ -45,6 +51,7 @@ const HomeScreen: React.FC = () => {
   return (
     <VStack align="center" justify="center" h="100vh">
       <Heading size="2xl" color="teal.500">Welcome to Tick-Tock-Toe</Heading>
+
       <Button onClick={handleNewGame} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
         Start New Game
       </Button>
@@ -93,3 +100,4 @@ const HomeScreen: React.FC = () => {
 };
 
 export default HomeScreen;
+
