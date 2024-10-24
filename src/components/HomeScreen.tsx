@@ -25,12 +25,14 @@ const HomeScreen: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const notice = useNotice();
 
-  const handleNewGame = async () => {
+  // Updated handleNewGame to accept AI mode
+  const handleNewGame = async (isAI: boolean) => {
     try {
-      const shortGameId = await request('/new', 'POST');
+      const url = isAI ? '/new?ai=true' : '/new';
+      const shortGameId = await request(url, 'POST');
       navigate(`/game/${shortGameId.slice(0, 5)}`);
     } catch (error) {
-      // エラーは useApi フック内で処理済み
+      console.error("Failed to start a new game:", error);
     }
   };
 
@@ -52,8 +54,13 @@ const HomeScreen: React.FC = () => {
     <VStack align="center" justify="center" h="100vh">
       <Heading size="2xl" color="teal.500">Welcome to Tick-Tock-Toe</Heading>
 
-      <Button onClick={handleNewGame} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
-        Start New Game
+      {/* Two buttons: one for AI game, one for Player vs Player game */}
+      <Button onClick={() => handleNewGame(true)} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
+        Start AI Game
+      </Button>
+
+      <Button onClick={() => handleNewGame(false)} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
+        Start Player vs Player Game
       </Button>
 
       <Box width="100%" textAlign="center">
