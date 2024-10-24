@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const useApi = () => {
   const notice = useNotice();
 
-  const request = async (endpoint: string, method: 'GET' | 'POST' = 'GET', body?: any) => {
+  const request = async (endpoint: string, method: 'GET' | 'POST' = 'GET', body?: any, autoUpdate: boolean = false) => {
     try {
       const response = await axios({
         method,
@@ -15,16 +15,20 @@ export const useApi = () => {
       });
       return response.data;
     } catch (error) {
-      notice({
-        title: 'Error',
-        description: 'Failed to fetch data. Please try again later.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+      // 自動更新時には通知せず、ユーザー操作時にのみ通知
+      if (!autoUpdate) {
+        notice({
+          title: 'Error',
+          description: 'Failed to fetch data. Please try again later.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
       throw error;
     }
   };
 
   return { request };
 };
+

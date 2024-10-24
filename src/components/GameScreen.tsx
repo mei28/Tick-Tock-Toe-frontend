@@ -18,21 +18,22 @@ const GameScreen: React.FC = () => {
   useEffect(() => {
     if (gameId) {
       const interval = setInterval(() => {
-        fetchBoard();
+        fetchBoard(true); // 自動更新時にはautoUpdate=trueを渡す
       }, 1000);
       return () => clearInterval(interval);
     }
   }, [gameId]);
 
-  const fetchBoard = async () => {
+  // autoUpdateがtrueならエラー通知を出さない
+  const fetchBoard = async (autoUpdate = false) => {
     try {
-      const data = await request(`/board/${gameId}`);
+      const data = await request(`/board/${gameId}`, 'GET', undefined, autoUpdate);
       setBoard(data.board);
       setCurrentPlayer(data.current_player);
       setWinner(data.winner);
       setWinningLine(data.winning_line);
     } catch (error) {
-      // エラーは useApi フック内で処理済み
+      // エラーは useApi フック内で処理されるので、ここでは何もしない
     }
   };
 
@@ -46,7 +47,7 @@ const GameScreen: React.FC = () => {
       setWinner(data.winner);
       setWinningLine(data.winning_line);
     } catch (error) {
-      // エラーは useApi フック内で処理済み
+      // エラーは useApi フック内で処理される
     }
   };
 
@@ -58,7 +59,7 @@ const GameScreen: React.FC = () => {
       setWinner(null);
       setWinningLine(null);
     } catch (error) {
-      // エラーは useApi フック内で処理済み
+      // エラーは useApi フック内で処理される
     }
   };
 
