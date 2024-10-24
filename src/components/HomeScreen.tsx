@@ -55,7 +55,7 @@ const HomeScreen: React.FC = () => {
       <Heading size="2xl" color="teal.500">Welcome to Tick-Tock-Toe</Heading>
 
       {/* Two buttons: one for AI game, one for Player vs Player game */}
-      <Button onClick={() => handleNewGame(true)} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
+      <Button onClick={() => navigate('/ai-settings')} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
         Start AI Game
       </Button>
 

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { UIProvider, Container } from '@yamada-ui/react';
 import HomeScreen from './components/HomeScreen';
 import GameScreen from './components/GameScreen';
+import AISettingsScreen from './components/AISettingsScreen';
 import ErrorPage from './components/ErrorPage';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomeScreen />} />
+            <Route path ="/ai-settings" element={<AISettingsScreen />} />
             <Route path="/game/:gameId" element={<GameScreen />} />
 
             {/* エラーページ */}
