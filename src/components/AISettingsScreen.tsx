@@ -41,22 +41,22 @@ const CustomRadio: FC<any> = (props) => {
 };
 
 const AISettingsScreen: React.FC = () => {
-  const [aiLevel, setAILevel] = useState<string>('medium'); // Default level is medium
-  const [selectedFirstPlayer, setSelectedFirstPlayer] = useState<string>('Player'); // Default to Player first
+  const [aiLevel, setAILevel] = useState<'easy' | 'medium' | 'hard'>('medium'); // 型定義を追加
+  const [selectedFirstPlayer, setSelectedFirstPlayer] = useState<'Player' | 'AI'>('Player'); // 型定義を追加
   const { request } = useApi();
   const navigate = useNavigate();
   const notice = useNotice();
 
   // Radio Group for First Player Selection (Player or AI)
-  const { getContainerProps: getFirstPlayerContainerProps, getRadioProps: getFirstPlayerRadioProps } = useRadioGroup({
+  const { getContainerProps: getFirstPlayerContainerProps, getRadioProps: getFirstPlayerRadioProps } = useRadioGroup<'Player' | 'AI'>({
     defaultValue: "Player", // Default to Player first
-    onChange: setSelectedFirstPlayer, // Track the selected value
+    onChange: (value: 'Player' | 'AI') => setSelectedFirstPlayer(value), // 型を指定
   });
 
   // Radio Group for AI Level Selection (Easy, Medium, Hard)
-  const { getContainerProps: getAILevelContainerProps, getRadioProps: getAILevelRadioProps } = useRadioGroup({
+  const { getContainerProps: getAILevelContainerProps, getRadioProps: getAILevelRadioProps } = useRadioGroup<'easy' | 'medium' | 'hard'>({
     defaultValue: "medium", // Default to Medium level
-    onChange: setAILevel, // Track the selected AI level
+    onChange: (value: 'easy' | 'medium' | 'hard') => setAILevel(value), // 型を指定
   });
 
   const handleStartGame = async () => {
