@@ -4,6 +4,7 @@ import HomeScreen from './components/HomeScreen';
 import GameScreen from './components/GameScreen';
 import AISettingsScreen from './components/AISettingsScreen';
 import ErrorPage from './components/ErrorPage';
+import StatusScreen from './components/StatusScreen';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/" element={<HomeScreen />} />
             <Route path ="/ai-settings" element={<AISettingsScreen />} />
             <Route path="/game/:gameId" element={<GameScreen />} />
+            <Route path="/status" element={<StatusScreen />} />
 
             {/* エラーページ */}
             <Route
