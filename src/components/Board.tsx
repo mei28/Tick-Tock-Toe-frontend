@@ -15,7 +15,7 @@ const Board: React.FC = () => {
   const [winningLine, setWinningLine] = useState<WinningLine>(null);
   const [gameId, setGameId] = useState<string | null>(null);
   const [inputGameId, setInputGameId] = useState<string>("");
-  const [isAiThinking, setIsAiThinking] = useState(false); // AI's thinking state
+  const [isAiThinking, setIsAiThinking] = useState(false); // AI thinking state
 
   useEffect(() => {
     if (gameId) {
@@ -30,15 +30,14 @@ const Board: React.FC = () => {
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
       setWinningLine(response.data.winning_line);
-      setIsAiThinking(response.data.isThinking); // Update AI's thinking state
+      setIsAiThinking(response.data.isThinking);  // Update AI thinking state
     } catch (error) {
       console.error("Failed to fetch board state:", error);
     }
   };
 
   const handleCellClick = async (row: number, col: number) => {
-    // Disable click if AI is thinking, there’s a winner, or the cell is occupied
-    if (winner || !gameId || isAiThinking || board[row][col]) return;
+    if (winner || !gameId || isAiThinking) return;
 
     try {
       const response = await axios.post(`${API_URL}/move/${gameId}`, [row, col]);
@@ -48,7 +47,6 @@ const Board: React.FC = () => {
       setWinningLine(response.data.winning_line);
       setIsAiThinking(response.data.isThinking);
 
-      // If AI is thinking, fetch board state after a delay
       if (response.data.isThinking) {
         setTimeout(fetchBoard, 1000);
       }
@@ -57,7 +55,38 @@ const Board: React.FC = () => {
     }
   };
 
-  // (Other existing functions remain unchanged)
+  const handleNewGame = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/new`);
+      setGameId(response.data);
+      setBoard(Array.from({ length: 3 }, () => Array(3).fill(null)));
+      setCurrentPlayer("X");
+      setWinner(null);
+      setWinningLine(null);
+    } catch (error) {
+      console.error("Failed to start a new game:", error);
+    }
+  };
+
+  const handleJoinGame = () => {
+    setGameId(inputGameId);
+    setInputGameId("");
+  };
+
+  const handleReset = async () => {
+    if (!gameId) return;
+
+    try {
+      const response = await axios.post(`${API_URL}/reset/${gameId}`);
+      setBoard(response.data.board);
+      setCurrentPlayer(response.data.current_player);
+      setWinner(response.data.winner);
+      setWinningLine(null);
+      setIsAiThinking(false);
+    } catch (error) {
+      console.error("Failed to reset the game:", error);
+    }
+  };
 
   return (
     <VStack align="center">
@@ -108,6 +137,7 @@ const Board: React.FC = () => {
                     value={cell || ""}
                     onClick={() => handleCellClick(rowIndex, colIndex)}
                     isWinning={winningLine?.some(([winRow, winCol]) => winRow === rowIndex && winCol === colIndex) || false}
+                    winner={winner}
                   />
                 ))
               )}

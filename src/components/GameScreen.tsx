@@ -143,6 +143,7 @@ const GameScreen: React.FC = () => {
                   value={cell || ""}
                   onClick={() => handleCellClick(rowIndex, colIndex)}
                   isWinning={winningLine?.some(([winRow, winCol]) => winRow === rowIndex && winCol === colIndex) || false}
+                  winner={winner}
                 />
               ))
             )}
