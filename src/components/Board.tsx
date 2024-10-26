@@ -4,7 +4,7 @@ import { VStack, Grid, Button, Box, Heading, Input, HStack, Text } from '@yamada
 import axios from 'axios';
 import { playerColors, Player } from '../constants/theme';
 
-const API_URL = import.meta.env.VITE_API_URL;  // Use environment variable
+const API_URL = import.meta.env.VITE_API_URL;
 
 type WinningLine = [[number, number], [number, number], [number, number]] | null;
 
@@ -15,6 +15,7 @@ const Board: React.FC = () => {
   const [winningLine, setWinningLine] = useState<WinningLine>(null);
   const [gameId, setGameId] = useState<string | null>(null);
   const [inputGameId, setInputGameId] = useState<string>("");
+  const [isAiThinking, setIsAiThinking] = useState(false); // AIが考慮中の状態
 
   useEffect(() => {
     if (gameId) {
@@ -29,13 +30,14 @@ const Board: React.FC = () => {
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
       setWinningLine(response.data.winning_line);
+      setIsAiThinking(response.data.isThinking);  // AIの思考状態を更新
     } catch (error) {
       console.error("Failed to fetch board state:", error);
     }
   };
 
   const handleCellClick = async (row: number, col: number) => {
-    if (winner || !gameId) return;
+    if (winner || !gameId || isAiThinking) return;  // AIが考慮中の場合はクリックを無効化
 
     try {
       const response = await axios.post(`${API_URL}/move/${gameId}`, [row, col]);
@@ -43,6 +45,12 @@ const Board: React.FC = () => {
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
       setWinningLine(response.data.winning_line);
+      setIsAiThinking(response.data.isThinking);
+
+      // AIが考慮中かを確認し、状態を更新
+      if (response.data.isThinking) {
+        setTimeout(fetchBoard, 1000); // 1秒後にAIの手番後のボードを再取得
+      }
     } catch (error) {
       console.error("Invalid move:", error);
     }
@@ -57,6 +65,7 @@ const Board: React.FC = () => {
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
       setWinningLine(null);
+      setIsAiThinking(false); // リセット時にAIの考慮中状態をリセット
     } catch (error) {
       console.error("Failed to reset the game:", error);
     }
@@ -81,10 +90,16 @@ const Board: React.FC = () => {
   };
 
   return (
-    <VStack align="center" >
+    <VStack align="center">
       {gameId && (
         <Text fontSize="lg" color="gray.500">
           {`Game ID: ${gameId}`}
+        </Text>
+      )}
+
+      {isAiThinking && (
+        <Text fontSize="lg" color="orange.500" fontWeight="bold">
+          AI is thinking...
         </Text>
       )}
 
