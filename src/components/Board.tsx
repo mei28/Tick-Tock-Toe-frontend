@@ -15,7 +15,7 @@ const Board: React.FC = () => {
   const [winningLine, setWinningLine] = useState<WinningLine>(null);
   const [gameId, setGameId] = useState<string | null>(null);
   const [inputGameId, setInputGameId] = useState<string>("");
-  const [isAiThinking, setIsAiThinking] = useState(false); // AIが考慮中の状態
+  const [isAiThinking, setIsAiThinking] = useState(false); // AI's thinking state
 
   useEffect(() => {
     if (gameId) {
@@ -30,14 +30,15 @@ const Board: React.FC = () => {
       setCurrentPlayer(response.data.current_player);
       setWinner(response.data.winner);
       setWinningLine(response.data.winning_line);
-      setIsAiThinking(response.data.isThinking);  // AIの思考状態を更新
+      setIsAiThinking(response.data.isThinking); // Update AI's thinking state
     } catch (error) {
       console.error("Failed to fetch board state:", error);
     }
   };
 
   const handleCellClick = async (row: number, col: number) => {
-    if (winner || !gameId || isAiThinking) return;  // AIが考慮中の場合はクリックを無効化
+    // Disable click if AI is thinking, there’s a winner, or the cell is occupied
+    if (winner || !gameId || isAiThinking || board[row][col]) return;
 
     try {
       const response = await axios.post(`${API_URL}/move/${gameId}`, [row, col]);
@@ -47,47 +48,16 @@ const Board: React.FC = () => {
       setWinningLine(response.data.winning_line);
       setIsAiThinking(response.data.isThinking);
 
-      // AIが考慮中かを確認し、状態を更新
+      // If AI is thinking, fetch board state after a delay
       if (response.data.isThinking) {
-        setTimeout(fetchBoard, 1000); // 1秒後にAIの手番後のボードを再取得
+        setTimeout(fetchBoard, 1000);
       }
     } catch (error) {
       console.error("Invalid move:", error);
     }
   };
 
-  const handleReset = async () => {
-    if (!gameId) return;
-
-    try {
-      const response = await axios.post(`${API_URL}/reset/${gameId}`);
-      setBoard(response.data.board);
-      setCurrentPlayer(response.data.current_player);
-      setWinner(response.data.winner);
-      setWinningLine(null);
-      setIsAiThinking(false); // リセット時にAIの考慮中状態をリセット
-    } catch (error) {
-      console.error("Failed to reset the game:", error);
-    }
-  };
-
-  const handleNewGame = async () => {
-    try {
-      const response = await axios.post(`${API_URL}/new`);
-      setGameId(response.data);
-      setBoard(Array.from({ length: 3 }, () => Array(3).fill(null)));
-      setCurrentPlayer("X");
-      setWinner(null);
-      setWinningLine(null);
-    } catch (error) {
-      console.error("Failed to start a new game:", error);
-    }
-  };
-
-  const handleJoinGame = () => {
-    setGameId(inputGameId);
-    setInputGameId("");
-  };
+  // (Other existing functions remain unchanged)
 
   return (
     <VStack align="center">

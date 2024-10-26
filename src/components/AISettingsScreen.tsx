@@ -17,7 +17,7 @@ const CustomRadio: FC<any> = (props) => {
   const { getInputProps, getIconProps } = useRadio(props);
 
   return (
-    <Box as="label">
+    <Box as="label" width="100%"> {/* Ensuring full width for uniformity */}
       <input {...getInputProps()} style={{ display: 'none' }} />
       <Box
         {...getIconProps()}
@@ -32,6 +32,7 @@ const CustomRadio: FC<any> = (props) => {
           color: "white",
           borderColor: "teal.700",
         }}
+        width="100%"  // Match width for all CustomRadio buttons
       >
         {props.children}
       </Box>
@@ -73,25 +74,36 @@ const AISettingsScreen: React.FC = () => {
   };
 
   return (
-    <VStack align="center" justify="center" h="100vh" gap={4} p={4}>
-      <Heading size="lg" color="teal.500">
+    <VStack align="center" justify="center" h="100vh" gap={{ base: 2, md: 4 }} p={{ base: 4, md: 6 }}>
+      <Heading size={{ base: "md", md: "lg" }} color="teal.500" textAlign="center">
         AI Game Settings
       </Heading>
 
-      <HStack gap={4} width="60%" maxW="300px" mt={6} {...getFirstPlayerContainerProps()}>
-        <Text>First Player:</Text>
-        <CustomRadio {...getFirstPlayerRadioProps({ value: "Player" })}>Player</CustomRadio>
-        <CustomRadio {...getFirstPlayerRadioProps({ value: "AI" })}>AI</CustomRadio>
-      </HStack>
+      <VStack width={{ base: "80%", sm: "60%", md: "50%" }} maxW="300px" mt={6}>
+        <Text textAlign="left" width="100%">First Player:</Text>
+        <HStack {...getFirstPlayerContainerProps()} width="100%">
+          <CustomRadio {...getFirstPlayerRadioProps({ value: "Player" })}>Player</CustomRadio>
+          <CustomRadio {...getFirstPlayerRadioProps({ value: "AI" })}>AI</CustomRadio>
+        </HStack>
+      </VStack>
 
-      <HStack gap={4} width="60%" maxW="300px" mt={4} {...getAILevelContainerProps()}>
-        <Text>AI Difficulty:</Text>
-        <CustomRadio {...getAILevelRadioProps({ value: "easy" })}>Easy</CustomRadio>
-        <CustomRadio {...getAILevelRadioProps({ value: "medium" })}>Medium</CustomRadio>
-        <CustomRadio {...getAILevelRadioProps({ value: "hard" })}>Hard</CustomRadio>
-      </HStack>
+      <VStack width={{ base: "80%", sm: "60%", md: "50%" }} maxW="300px" mt={4}>
+        <Text textAlign="left" width="100%">AI Difficulty:</Text>
+        <HStack {...getAILevelContainerProps()} width="100%">
+          <CustomRadio {...getAILevelRadioProps({ value: "easy" })}>Easy</CustomRadio>
+          <CustomRadio {...getAILevelRadioProps({ value: "medium" })}>Medium</CustomRadio>
+          <CustomRadio {...getAILevelRadioProps({ value: "hard" })}>Hard</CustomRadio>
+        </HStack>
+      </VStack>
 
-      <Button onClick={handleStartGame} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={6}>
+      <Button
+        onClick={handleStartGame}
+        colorScheme="teal"
+        size={{ base: "md", md: "lg" }}
+        width={{ base: "80%", sm: "60%", md: "50%" }}
+        maxW="300px"
+        mt={6}
+      >
         Start Game
       </Button>
     </VStack>

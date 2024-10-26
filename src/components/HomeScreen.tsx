@@ -60,7 +60,7 @@ const HomeScreen: React.FC = () => {
       </Button>
 
       <Button onClick={() => handleNewGame(false)} colorScheme="teal" size="lg" width="60%" maxW="300px" mt={4}>
-        Start Player vs Player Game
+        Start PvP Game
       </Button>
 
       <Box width="100%" textAlign="center">
